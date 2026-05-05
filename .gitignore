@@ -1,0 +1,22 @@
+# Virtual environment
+venv/
+mlopsenv/
+
+# MLflow
+mlruns/
+mlflow.db
+
+# Python cache
+__pycache__/
+*.pkl
+*.pyc
+
+# Data — raw data shouldn't go to GitHub
+data/raw/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
