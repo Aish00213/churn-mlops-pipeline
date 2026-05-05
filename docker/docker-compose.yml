@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+
+  # ── FastAPI Service ──
+  # Serves the prediction API on port 8000
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: churn-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../data:/app/data        # Mount data folder so model files are accessible
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+
+  # ── Streamlit Service ──
+  # Serves the dashboard on port 8501
+  dashboard:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: churn-dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ../data:/app/data        # Same data folder — shares model files
+    command: streamlit run app/streamlit_app.py --server.port 8501 --server.address 0.0.0.0
+    restart: unless-stopped
+    depends_on:
+      - api                      # Dashboard starts after API is ready
