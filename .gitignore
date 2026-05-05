@@ -5,6 +5,7 @@ mlopsenv/
 # MLflow
 mlruns/
 mlflow.db
+*.db
 
 # Python cache
 __pycache__/
@@ -12,9 +13,8 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Data — raw and processed data shouldn't go to GitHub
-data/raw/
-data/processed/
+# All data folders
+data/
 
 # IDE
 .vscode/
