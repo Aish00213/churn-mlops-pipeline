@@ -10,9 +10,11 @@ mlflow.db
 __pycache__/
 *.pkl
 *.pyc
+*.pyo
 
-# Data — raw data shouldn't go to GitHub
+# Data — raw and processed data shouldn't go to GitHub
 data/raw/
+data/processed/
 
 # IDE
 .vscode/
