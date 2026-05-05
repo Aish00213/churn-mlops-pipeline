@@ -1,0 +1,72 @@
+name: Churn MLOps Pipeline — CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check project structure
+        run: |
+          test -f src/ingest.py && echo "✅ ingest.py found"
+          test -f src/validate.py && echo "✅ validate.py found"
+          test -f src/segment.py && echo "✅ segment.py found"
+          test -f src/features.py && echo "✅ features.py found"
+          test -f src/train.py && echo "✅ train.py found"
+          test -f src/explain.py && echo "✅ explain.py found"
+          test -f src/recommend.py && echo "✅ recommend.py found"
+          test -f api/main.py && echo "✅ api/main.py found"
+          test -f app/streamlit_app.py && echo "✅ streamlit_app.py found"
+          test -f docker/Dockerfile && echo "✅ Dockerfile found"
+          echo "✅ All required files present"
+
+      - name: Validate Python syntax
+        run: |
+          python -m py_compile src/ingest.py
+          python -m py_compile src/validate.py
+          python -m py_compile src/segment.py
+          python -m py_compile src/features.py
+          python -m py_compile src/train.py
+          python -m py_compile src/explain.py
+          python -m py_compile src/recommend.py
+          python -m py_compile api/main.py
+          python -m py_compile app/streamlit_app.py
+          echo "✅ All Python files passed syntax check"
+
+  docker-build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -f docker/Dockerfile -t churn-mlops-pipeline:latest .
+          echo "✅ Docker image built successfully"
