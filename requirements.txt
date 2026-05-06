@@ -3,13 +3,8 @@ numpy
 scikit-learn
 xgboost
 imbalanced-learn
-mlflow
-fastapi
-uvicorn
 streamlit
 shap
 matplotlib
 seaborn
-great-expectations
 joblib
-python-multipart
